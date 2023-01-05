@@ -11,18 +11,20 @@ pattern = re.compile('([Dd]jango|[Ff]lask)')
 def get_headers():
 # Функция генерирует параметры для имитации запроса как у браузера
     return Headers(browser='firefox', os='win').generate()
+
 def get_html(url):
 # Функция возвращает html страницу
     req = requests.get(url, headers=get_headers()).text
     return BeautifulSoup(req, 'lxml')
+
 def save_json(name_file, result_dict):
     with open('all_vacans.json', 'a', encoding='utf-8') as file:
         json.dump(result_dict, file, indent=4, ensure_ascii=False)
+
 def get_number_page(url):
 # функция возвращает максимальное число страниц
     html = get_html(url)
     return int(html.find('div', class_='pager').find_all('span')[-3].text)
-
 
 def get_data(soup):
     vacancy_list = soup.find(class_='vacancy-serp-content')
@@ -50,6 +52,7 @@ def get_data(soup):
             print(f"Итерация №{count}")
             time.sleep(3)
     save_json('all_vacancies', result_file)
+
 def start_parsing(number_page=1):
     for page in range(number_page):
         URL = f'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2&page={page}'
